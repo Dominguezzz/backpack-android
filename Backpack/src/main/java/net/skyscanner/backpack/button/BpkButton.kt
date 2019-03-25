@@ -41,16 +41,11 @@ open class BpkButton : AppCompatButton {
   constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, getStyle(context, attrs))
   constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, Type.Primary)
   constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, type: Type) : super(context, attrs, defStyleAttr) {
-    this.initialType = type
+    this.type = type
     initialize(attrs, defStyleAttr)
   }
 
-  val type: Type
-    get() {
-      return initialType
-    }
-
-  private var initialType: Type
+  var type: Type
 
   @IntDef(START, END, ICON_ONLY)
   annotation class IconPosition
@@ -68,6 +63,12 @@ open class BpkButton : AppCompatButton {
       this.setup()
     }
 
+  var isLarge = false
+    set(value) {
+      field = value
+      this.setup()
+    }
+
   @ColorInt
   private var buttonBackgroundColor: Int = ContextCompat.getColor(context, R.color.bpkGreen500)
   @ColorInt
@@ -79,6 +80,8 @@ open class BpkButton : AppCompatButton {
   // Text is 12dp and icon is 16dp. if icon is present,
   // padding needs to be reduced by 2 dp on both sides
   private val paddingWithIcon = context.resources.getDimension(R.dimen.bpkSpacingMd).toInt()
+  private val paddingLarge = context.resources.getDimension(R.dimen.bpkSpacingLg).toInt()
+  private val paddingLargeDefaultVertical = context.resources.getDimension(R.dimen.bpkSpacingBase).toInt()
 
   private val roundedButtonCorner = context.resources.getDimension(R.dimen.bpkSpacingLg)
   private val strokeWidth = context.resources.getDimension(R.dimen.bpkBorderSizeLg).toInt()
@@ -107,10 +110,11 @@ open class BpkButton : AppCompatButton {
     val attr = context.theme.obtainStyledAttributes(attrs, R.styleable.BpkButton, defStyleAttr, 0)
     try {
       if (attr.hasValue(R.styleable.BpkButton_buttonType)) {
-        initialType = Type.fromId(attr.getInt(R.styleable.BpkButton_buttonType, 0))
+        type = Type.fromId(attr.getInt(R.styleable.BpkButton_buttonType, 0))
       }
 
       iconPosition = attr.getInt(R.styleable.BpkButton_buttonIconPosition, END)
+      isLarge = attr.getBoolean(R.styleable.BpkButton_buttonLarge, false)
 
       buttonBackgroundColor = attr.getColor(R.styleable.BpkButton_buttonBackgroundColor, ContextCompat.getColor(context, type.bgColor))
       buttonTextColor = attr.getColor(R.styleable.BpkButton_buttonTextColor, ContextCompat.getColor(context, type.textColor))
@@ -161,11 +165,21 @@ open class BpkButton : AppCompatButton {
       text = null
     }
 
-    when {
-      iconPosition == ICON_ONLY -> setPadding(paddingWithIcon, paddingWithIcon, paddingWithIcon, paddingWithIcon)
-      (this.icon != null && iconPosition == END) -> setPaddingRelative(defaultPadding, paddingWithIcon, paddingWithIcon, paddingWithIcon)
-      (this.icon != null && iconPosition == START) -> setPaddingRelative(paddingWithIcon, paddingWithIcon, defaultPadding, paddingWithIcon)
-      else -> setPadding(defaultPadding, defaultPadding, defaultPadding, defaultPadding)
+    if(isLarge){
+      when {
+        iconPosition == ICON_ONLY -> setPadding(paddingLargeDefaultVertical, paddingLargeDefaultVertical, paddingLargeDefaultVertical, paddingLargeDefaultVertical)
+//        (this.icon != null && iconPosition == END) -> setPaddingRelative(paddingLarge, paddingLarge, paddingLarge, paddingLarge)
+//        (this.icon != null && iconPosition == START) -> setPaddingRelative(paddingLarge, paddingLarge, defaultPadding, paddingLarge)
+        else -> setPadding(paddingLarge, paddingLargeDefaultVertical, paddingLarge, paddingLargeDefaultVertical)
+      }
+    }
+    else{
+      when {
+        iconPosition == ICON_ONLY -> setPadding(paddingWithIcon, paddingWithIcon, paddingWithIcon, paddingWithIcon)
+        (this.icon != null && iconPosition == END) -> setPaddingRelative(defaultPadding, paddingWithIcon, paddingWithIcon, paddingWithIcon)
+        (this.icon != null && iconPosition == START) -> setPaddingRelative(paddingWithIcon, paddingWithIcon, defaultPadding, paddingWithIcon)
+        else -> setPadding(defaultPadding, defaultPadding, defaultPadding, defaultPadding)
+      }
     }
 
     if (!text.isNullOrEmpty()) {

@@ -52,6 +52,7 @@
       <enum name="outline" value="4" />
     </attr>
     <attr name="buttonIcon" format="reference" />
+    <attr name="buttonLarge" format="boolean" />
     <attr name="buttonIconPosition" format="enum">
       <enum name="start" value="0" />
       <enum name="end" value="1" />

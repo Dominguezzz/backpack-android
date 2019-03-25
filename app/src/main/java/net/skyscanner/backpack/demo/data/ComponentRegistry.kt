@@ -1,6 +1,8 @@
 package net.skyscanner.backpack.demo.data
 
+import net.skyscanner.backpack.button.BpkButton
 import net.skyscanner.backpack.demo.R
+import net.skyscanner.backpack.demo.stories.ButtonStory
 import net.skyscanner.backpack.demo.stories.DefaultCalendarStory
 import net.skyscanner.backpack.demo.stories.DialogStory
 import net.skyscanner.backpack.demo.stories.GradientStory
@@ -72,11 +74,11 @@ object ComponentRegistry {
     "Badge" story NodeData { Story of R.layout.fragment_badge },
     "Button" story NodeData({ children -> SubStory of children },
       mapOf(
-        "Primary" story NodeData { Story of R.layout.fragment_button_primary },
-        "Secondary" story NodeData { Story of R.layout.fragment_button_secondary },
-        "Destructive" story NodeData { Story of R.layout.fragment_button_destructive },
-        "Featured" story NodeData { Story of R.layout.fragment_button_featured },
-        "Outline" story NodeData { Story of R.layout.fragment_button_outline }
+        "Primary" story NodeData { ButtonStory of BpkButton.Type.Primary },
+        "Secondary" story NodeData { ButtonStory of BpkButton.Type.Secondary },
+        "Destructive" story NodeData { ButtonStory of BpkButton.Type.Destructive },
+        "Featured" story NodeData { ButtonStory of BpkButton.Type.Featured },
+        "Outline" story NodeData { ButtonStory of BpkButton.Type.Outline }
       )),
     "Card" story NodeData({ children -> SubStory of children },
       mapOf(
